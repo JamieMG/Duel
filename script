@@ -1,0 +1,200 @@
+import random
+from random import randint
+
+def roll(n=20):
+    x = randint(1,n)
+    return(x)
+
+
+
+count = 0
+win1 = 0
+win2 = 0
+rounds = 0
+#get them stats
+ac1 = int(input("What is your first AC? "))
+hp1 = int(input("What is your first HP? "))
+init1 = int(input("What is your first init? "))
+bab1 = int(input("What is your first attack bonus? "))
+hit1 = int(input("How many attacks does your first character get per round?"))
+pen1 = int(input("What is your first iterative penalty?"))
+cc1 = int(input("What is your first crit chance? Format 19-20 = 19: "))
+cm1 = int(input("What is your first crit multiplier? "))
+dmg1 = input("What is your first damage roll. Format 2d6+3 ")
+ac2 = int(input("What is your second AC? "))
+hp2 = int(input("What is your second HP? "))
+init2 = int(input("What is your second init? "))
+bab2 = int(input("What is your second attack bonus? "))
+hit2 = int(input("How many attacks does your second character get per round?"))
+pen2 = int(input("What is your second iterative penalty?"))
+cc2 = int(input("What is your second crit chance? Format 19-20 = 19: "))
+cm2 = int(input("What is your second crit multiplier? "))
+dmg2 = input("What is your second damage roll. Format 2d6+3 ")
+if dmg1[1] and dmg2[1] == "d":
+    pass
+else:
+    print("Your damage format is wrong")
+    exit()
+
+
+maxhp1 = hp1
+maxhp2 = hp2
+#set them stats
+if dmg1[3] == "+":
+    d1 = int(dmg1[0])
+    d3 = int(dmg1[2])
+    d5 = int(dmg1[4:])
+else:
+    d1 = int(dmg1[0])
+    d3 = int(dmg1[2-3])
+    d5 = int(dmg1[5:])
+if dmg2[3] == "+":
+    d2 = int(dmg2[0])
+    d4 = int(dmg2[2])
+    d6 = int(dmg2[4:])
+else:
+    d2 = int(dmg1[0])
+    d4 = int(dmg1[2-3])
+    d6 = int(dmg1[5:])
+
+
+while count < 50000:
+    #reset the fight
+    rbab1 = bab1
+    rbab2 = bab2
+    hitcount1 = 0
+    hitcount2 = 0
+    totalinit1 = roll()+init1
+    totalinit2 = roll()+init2
+    hp1 = maxhp1
+    hp2 = maxhp2
+    
+    #tiebreaker
+    while totalinit1 == totalinit2:
+        totalinit1 = roll()+init1
+        totalinit2 = roll()+init2
+        
+    #PC1 goes first
+    if totalinit1 > totalinit2:
+        #if both are alive
+        while (hp1 >0) and (hp2 > 0):
+            if hitcount1 < hit1:
+                if hitcount1 == 1:
+                    rbab1 -= pen1
+                elif hitcount1 == 2:
+                    rbab1 -= pen1
+                elif hitcount2 == 3:
+                    rbab1 -= pen1
+                elif hitcount1 == 4:
+                    rbab1 -= pen1
+                hitcount1 += 1
+                att1 = roll()+rbab1
+            else:
+                att1 = 0
+            if hitcount2 < hit2:
+                if hitcount2 == 1:
+                    rbab2 -= pen2
+                elif hitcount2 == 2:
+                    rbab2 -=pen2
+                elif hitcount2 == 3:
+                    rbab2 -= pen2
+                elif hitcount2 == 4:
+                    rbab2 -= pen2
+                hitcount2 += 1
+                att2 = roll()+rbab2
+            else: att2 = 0
+            if (hitcount1 >= hit1) and (hitcount2 >= hit2):
+                hitcount1 = 0
+                hitcount2 = 0
+                rbab1 = bab1
+                rbab2 = bab2
+                rounds = rounds+1
+            dmgdie1 = 0
+            dmgdie2 = 0
+            dmgcount1 = 0
+            dmgcount2 = 0
+            if att1 > ac2:
+                while dmgcount1 <d1:
+                    dice1 = roll(n=d3)
+                    dmgdie1+=dice1
+                    dmgcount1+=1
+                    damage1 = dmgdie1+d5
+                    if (att1-bab1) >= cc1:
+                        damage1 *= cm1
+                hp2-=damage1
+            if hp2 > 0:
+                if att2 > ac1:
+                    while dmgcount2 <d2:
+                        dice2 = roll(n=d4)
+                        dmgdie2+=dice2
+                        dmgcount2+=1
+                        damage2 = dmgdie2+d6
+                        if (att2-bab2) >= cc2:
+                            damage2 *= cm2
+                    hp1-=damage2
+    else:
+        while (hp1 >0) and (hp2 > 0):
+            if hitcount1 < hit1:
+                if hitcount1 == 1:
+                    rbab1 -= pen1
+                elif hitcount1 == 2:
+                    rbab1 -= pen1
+                elif hitcount2 == 3:
+                    rbab1 -= pen1
+                elif hitcount1 == 4:
+                    rbab1 -= pen1
+                hitcount1 += 1
+                att1 = roll()+bab1
+            else:
+                att1 = 0
+            if hitcount2 < hit2:
+                if hitcount2 == 1:
+                    rbab2 -= pen2
+                elif hitcount2 == 2:
+                    rbab2 -=pen2
+                elif hitcount2 == 3:
+                    rbab2 -= pen2
+                elif hitcount2 == 4:
+                    rbab2 -= pen2
+                hitcount2 += 1
+                att2 = roll()+bab2
+            else: att2 = 0
+            if (hitcount1 >= hit1) and (hitcount2 >= hit2):
+                hitcount1 = 0
+                hitcount2 = 0
+                rbab1 = bab1
+                rbab2 = bab2
+                rounds = rounds+1
+            dmgdie1 = 0
+            dmgdie2 = 0
+            dmgcount1 = 0
+            dmgcount2 = 0
+            if att2 > ac1:
+                while dmgcount2 <d2:
+                    dice2 = roll(n=d4)
+                    dmgdie2+=dice2
+                    dmgcount2+=1
+                    damage2 = dmgdie2+d6
+                    if (att2-bab2) >= cc2:
+                        damage2 *= cm2
+                hp1-=damage2
+            if hp1 > 0:
+                if att1 > ac2:
+                    while dmgcount1 <d1:
+                        dice1 = roll(n=d3)
+                        dmgdie1+=dice1
+                        dmgcount1+=1
+                        damage1 = dmgdie1+d5
+                        if (att1-bab1) >= cc1:
+                            damage1 *= cm1
+                    hp2-=damage1
+    if hp1>0:
+        win1+=1
+    else:
+        win2+=1
+    count+=1             
+      
+avgrnds = rounds/50000
+print("Combat took an average of ", avgrnds, "rounds")
+print("Your first combatant won ", win1/500, "percent of the time!")
+print("Your second combatant won ", win2/500, "percent of the time!")
